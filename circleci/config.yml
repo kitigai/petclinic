@@ -7,7 +7,12 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/openjdk:8-jdk
+      - image: gcr.io/project/image-name
+      
+    auth:
+      #Put the contents of keyfile.json into an environment variable for the build called GCR_CREDS, which is then passed in.
+      username: _json_key
+      password: $GOOGLE_AUTH 
       
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -17,6 +22,12 @@ jobs:
     working_directory: ~/repo
 
     environment:
+      PROJECT_ID: xxxtestxxx12345
+      CLUSTER_NAME: hello-cluster
+      COMPUTE_ZONE: us-central1-b
+      #As specified in Deployment.yml
+      DEPLOYMENT_NAME: mori-dep
+      CONTAINER_NAME: node-app
       # Customize the JVM maximum heap limit
       MAVEN_OPTS: -Xmx3200m
     
@@ -37,6 +48,11 @@ jobs:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}
         
+       - run: mvn package
+       
+       - store_artifacts:
+          path: target/demo-java-spring-0.0.1-SNAPSHOT.jar
+
       # run tests!
       - run: mvn integration-test
 
