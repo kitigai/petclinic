@@ -1,5 +1,57 @@
 version: 2
 jobs:
+  build:
+    docker:
+      # specify the version you desire here
+      - image: gcr.io/project/image-name
+      
+    auth:
+      #Put the contents of keyfile.json into an environment variable for the build called GCR_CREDS, which is then passed in.
+      username: _json_key
+      password: $GOOGLE_AUTH 
+      
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/postgres:9.4
+
+    working_directory: ~/repo
+
+    environment:
+      PROJECT_ID: xxxtestxxx12345
+      CLUSTER_NAME: cluster-1
+      COMPUTE_ZONE: us-central1-a
+      #As specified in Deployment.yml
+      DEPLOYMENT_NAME: mori-dep
+      CONTAINER_NAME: node-app
+      # Customize the JVM maximum heap limit
+      MAVEN_OPTS: -Xmx3200m
+    
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "pom.xml" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run: mvn dependency:go-offline
+
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}
+        
+       - run: mvn package
+       
+       - store_artifacts:
+          path: target/demo-java-spring-0.0.1-SNAPSHOT.jar
+
+       # run tests!
+       - run: mvn integration-test
+       
   deploy-job:
     working_directory: /app
     environment:
@@ -8,10 +60,20 @@ jobs:
       CLOUDSDK_COMPUTE_ZONE: us-central1-a
 
     docker:
-      - image: google/cloud-sdk
+      - image: google/cloud-sdk:latest
     steps:
       - run:
         name: Store Service Account
-        command: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
-        command: sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-        command: sudo /opt/google-cloud-sdk/bin/gcloud config set project $GCLOUD_PROJECT
+        # command: sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update
+        # command: sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update kubectl
+        command: echo $SERVICE_KEY | base64 --decode -i > ${HOME}/account-auth.json
+        command: sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file ${HOME}/account-auth.json
+        command: sudo /opt/google-cloud-sdk/bin/gcloud config set project $PROJECT_NAME
+        command: sudo /opt/google-cloud-sdk/bin/gcloud --quiet config set container/cluster $CLUSTER_NAME
+        # Reading the zone from the env var is not working so we set it here
+        command: sudo /opt/google-cloud-sdk/bin/gcloud config set compute/zone ${CLOUDSDK_COMPUTE_ZONE}
+        command: sudo /opt/google-cloud-sdk/bin/gcloud --quiet container clusters get-credentials $CLUSTER_NAME
+        command: ./mvnw install dockerfile:build
+        # Using a separate tag command until Docker 1.10 is available on CircleCI, then we can use two tags in the build command above
+        #command: docker tag us.gcr.io/${PROJECT_NAME}/spring-petclinic:$CIRCLE_SHA1 us.gcr.io/${PROJECT_NAME}/hello:latest
+        
