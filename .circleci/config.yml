@@ -54,7 +54,7 @@ jobs:
       - run:
           name: Check jdk version
           command: |
-            echo `env | grep JAVA_HOME`
+            env
       - run:
           name: Store Service Account
           command: |
