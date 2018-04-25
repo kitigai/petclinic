@@ -46,10 +46,6 @@ jobs:
             mvnw -e install dockerfile:build
             mkdir -p docker-cache
             docker save -o docker-cache/build-image.tar us.gcr.io/${PROJECT_NAME}/spring-petclinic
-      - save_cache:
-          key: docker_cache_key
-          paths:
-            - docker-cache
 
   deploy-job:
     working_directory: /app
