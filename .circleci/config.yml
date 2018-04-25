@@ -43,9 +43,9 @@ jobs:
       - run: 
          name: Build docker and save
          command: |
-            mvnw -e install dockerfile:build
-            mkdir -p docker-cache
-            docker save -o docker-cache/build-image.tar us.gcr.io/${PROJECT_NAME}/spring-petclinic
+           mvnw -e install dockerfile:build
+           mkdir -p docker-cache
+           docker save -o docker-cache/build-image.tar us.gcr.io/${PROJECT_NAME}/spring-petclinic
 
   deploy-job:
     working_directory: /app
