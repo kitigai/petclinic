@@ -52,8 +52,8 @@ jobs:
     steps:
       - checkout
       - run:
-        name: Store Service Account
-        command: echo "A more familiar hi"
+          name: Store Service Account
+          command: echo "A more familiar hi"
 
 workflows:
   version: 2
