@@ -40,38 +40,11 @@ jobs:
       # run tests!
       - run: mvn integration-test
 
-  deploy-job:
-    working_directory: /app
-    environment:
-      PROJECT_NAME: xxxtestxxx12345
-      CLUSTER_NAME: cluster-1
-      CLOUDSDK_COMPUTE_ZONE: us-central1-a
 
-    docker:
-      - image: google/cloud-sdk:latest
-    steps:
-      - checkout
-      - run:
-        name: Store Service Account
-        # command: sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update
-        # command: sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update kubectl
-        command: echo $SERVICE_KEY | base64 --decode -i > ${HOME}/account-auth.json
-        command: sudo /opt/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file ${HOME}/account-auth.json
-        command: sudo /opt/google-cloud-sdk/bin/gcloud config set project $PROJECT_NAME
-        command: sudo /opt/google-cloud-sdk/bin/gcloud --quiet config set container/cluster $CLUSTER_NAME
-        # Reading the zone from the env var is not working so we set it here
-        command: sudo /opt/google-cloud-sdk/bin/gcloud config set compute/zone ${CLOUDSDK_COMPUTE_ZONE}
-        command: sudo /opt/google-cloud-sdk/bin/gcloud --quiet container clusters get-credentials $CLUSTER_NAME
-        command: ./mvnw install dockerfile:build
-        # Using a separate tag command until Docker 1.10 is available on CircleCI, then we can use two tags in the build command above
-        #command: docker tag us.gcr.io/${PROJECT_NAME}/spring-petclinic:$CIRCLE_SHA1 us.gcr.io/${PROJECT_NAME}/hello:latest
-        command: ./deploy.sh
 
 workflows:
   version: 2
   build_and_deploy:
     jobs:
       - build
-      - deploy-job:
-        requires:
-          - build
+
