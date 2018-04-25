@@ -54,7 +54,7 @@ jobs:
       - run:
           name: Store Service Account
           command: |
-            env | grep JAVA_HOME
+             echo `env | grep JAVA_HOME`
             gcloud auth activate-service-account --key-file ${HOME}/account-auth.json
             gcloud config set project $PROJECT_NAME
             gcloud --quiet config set container/cluster $CLUSTER_NAME
