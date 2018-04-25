@@ -48,7 +48,7 @@ jobs:
       CLOUDSDK_COMPUTE_ZONE: us-central1-a
 
     docker:
-      - image: google/cloud-sdk:alpine
+      - image: google/cloud-sdk:latest
     steps:
       - checkout
       - run:
