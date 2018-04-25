@@ -39,6 +39,17 @@ jobs:
         
       # run tests!
       # - run: mvn integration-test
+      # run build
+      - run: 
+         name: Build docker and save
+          command: |
+            mvnw -e install dockerfile:build
+            mkdir -p docker-cache
+            docker save -o docker-cache/build-image.tar us.gcr.io/${PROJECT_NAME}/spring-petclinic
+      - save_cache:
+          key: docker_cache_key
+          paths:
+            - docker-cache
 
   deploy-job:
     working_directory: /app
@@ -66,10 +77,19 @@ jobs:
             # Reading the zone from the env var is not working so we set it here
             gcloud config set compute/zone ${CLOUDSDK_COMPUTE_ZONE}
             gcloud --quiet container clusters get-credentials $CLUSTER_NAME
-            ./mvnw -e install dockerfile:build
+            #./mvnw -e install dockerfile:build
             # Using a separate tag command until Docker 1.10 is available on CircleCI, then we can use two tags in the build command above
             #command: docker tag us.gcr.io/${PROJECT_NAME}/spring-petclinic:$CIRCLE_SHA1 us.gcr.io/${PROJECT_NAME}/hello:latest
-            ./deploy.sh
+            #./deploy.sh
+
+      - restore_cache:
+          keys:
+          - docker_cache_key
+      -run:
+        name: Deploy docker to GKP
+        command: |
+          docker load < docker-cache/build-image.tar
+          ./deploy.sh
 
 workflows:
   version: 2
