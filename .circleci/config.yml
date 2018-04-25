@@ -43,7 +43,7 @@ jobs:
       - run: 
          name: Build docker and save
          command: |
-           sudo mvn -e -DskipTests install dockerfile:build
+           sudo /opt/maven/bin/mvn -e -DskipTests install dockerfile:build
            mkdir -p docker-cache
            docker save -o docker-cache/build-image.tar us.gcr.io/${PROJECT_NAME}/spring-petclinic
 
