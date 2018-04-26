@@ -67,7 +67,7 @@ jobs:
            docker save -o docker-cache/build-image.tar us.gcr.io/${PROJECT_NAME}/spring-petclinic
 
       - save_cache:
-          key: docker_cache_key-{{ checksum "pom.xml" }}
+          key: docker_cache_key-
           paths:
             - docker-cache
 
@@ -91,7 +91,7 @@ jobs:
       - run:
           name: Check jdk version
           command: |
-            env
+            ls -a
       - run:
           name: Store Service Account
           command: |
