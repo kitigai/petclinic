@@ -109,10 +109,10 @@ jobs:
             #./deploy.sh
 
       - run:
-        name: Deploy docker to GKP
-        command: |
-          docker load < docker-cache/build-image.tar
-          ./deploy.sh
+          name: Deploy docker to GKP
+          command: |
+            docker load < docker-cache/build-image.tar
+            ./deploy.sh
 
 
 workflows:
