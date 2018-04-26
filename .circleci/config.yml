@@ -84,15 +84,13 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - docker_cache_key-{{ checksum "pom.xml" }}
-          # fallback to using the latest cache if no exact match is found
           - docker_cache_key-
+
 
       - run:
           name: Check jdk version
           command: |
-            pwd
-            ls -a
+            whereis docker
       - run:
           name: Store Service Account
           command: |
