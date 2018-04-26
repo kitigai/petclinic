@@ -82,6 +82,12 @@ jobs:
       - image: google/cloud-sdk:latest
     steps:
       - checkout
+      - restore_cache:
+          keys:
+          - docker_cache_key-{{ checksum "pom.xml" }}
+          # fallback to using the latest cache if no exact match is found
+          - docker_cache_key-
+
       - run:
           name: Check jdk version
           command: |
@@ -101,11 +107,6 @@ jobs:
             # Using a separate tag command until Docker 1.10 is available on CircleCI, then we can use two tags in the build command above
             #command: docker tag us.gcr.io/${PROJECT_NAME}/spring-petclinic:$CIRCLE_SHA1 us.gcr.io/${PROJECT_NAME}/hello:latest
             #./deploy.sh
-
-      - restore_cache:
-          keys:
-          - docker_cache_key-{{ checksum "docker-cache/build-image.tar" }}
-          - docker_cache_key-
 
       -run:
         name: Deploy docker to GKP
