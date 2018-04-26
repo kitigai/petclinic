@@ -107,10 +107,13 @@ jobs:
             #command: docker tag us.gcr.io/${PROJECT_NAME}/spring-petclinic:$CIRCLE_SHA1 us.gcr.io/${PROJECT_NAME}/hello:latest
             #./deploy.sh
 
+      - setup_remote_docker:   # (2)
+          docker_layer_caching: true # (3)
+
       - run:
           name: Deploy docker to GKP
           command: |
-            sudo /usr/local/bin/docker load < /home/circleci/repo/docker-cache/build-image.tar
+            docker load < /home/circleci/repo/docker-cache/build-image.tar
             ./deploy.sh
 
 
