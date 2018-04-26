@@ -67,7 +67,7 @@ jobs:
            docker save -o docker-cache/build-image.tar us.gcr.io/${PROJECT_NAME}/spring-petclinic
 
       - save_cache:
-          key: docker_cache_key
+          key: docker_cache_key-{{ checksum "docker-cache/build-image.tar" }}
           paths:
             - docker-cache
 
@@ -104,7 +104,8 @@ jobs:
 
       - restore_cache:
           keys:
-          - docker_cache_key
+          - docker_cache_key-{{ checksum "docker-cache/build-image.tar" }}
+          - docker_cache_key-
 
       -run:
         name: Deploy docker to GKP
