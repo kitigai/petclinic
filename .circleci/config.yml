@@ -7,8 +7,8 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      #- image: circleci/openjdk:8-jdk
-      - image: gcr.io/google-appengine/openjdk:8
+      - image: circleci/openjdk:8-jdk
+      #- image: gcr.io/google-appengine/openjdk:8
       
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -46,6 +46,7 @@ jobs:
             curl -L -o /tmp/docker-$VER.tgz https://download.docker.com/linux/static/stable/x86_64/docker-$VER.tgz
             tar -xz -C /tmp -f /tmp/docker-$VER.tgz
             sudo mv -f /tmp/docker/* /usr/bin
+            sudo dockerd
 
       # run tests!
       # - run: mvn integration-test
