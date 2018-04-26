@@ -102,7 +102,14 @@ jobs:
             #command: docker tag us.gcr.io/${PROJECT_NAME}/spring-petclinic:$CIRCLE_SHA1 us.gcr.io/${PROJECT_NAME}/hello:latest
             #./deploy.sh
 
-
+      - restore_cache:
+          keys:
+          - docker_cache_key
+      -run:
+        name: Deploy docker to GKP
+        command: |
+          docker load < docker-cache/build-image.tar
+          ./deploy.sh
 
 workflows:
   version: 2
