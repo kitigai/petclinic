@@ -104,7 +104,8 @@ jobs:
 
       - restore_cache:
           keys:
-            - docker_cache_key
+          - docker_cache_key
+
       -run:
         name: Deploy docker to GKP
         command: |
