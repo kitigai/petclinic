@@ -67,7 +67,7 @@ jobs:
            docker save -o docker-cache/build-image.tar us.gcr.io/${PROJECT_NAME}/spring-petclinic
 
       - save_cache:
-          key: docker_cache_key-{{ checksum "docker-cache/build-image.tar" }}
+          key: docker_cache_key-{{ checksum "pom.xml" }}
           paths:
             - docker-cache
 
