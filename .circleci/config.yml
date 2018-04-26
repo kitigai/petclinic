@@ -110,7 +110,7 @@ jobs:
       - run:
           name: Deploy docker to GKP
           command: |
-            sudo docker load < /home/circleci/repo/docker-cache/build-image.tar
+            sudo /usr/local/bin/docker load < /home/circleci/repo/docker-cache/build-image.tar
             ./deploy.sh
 
 
