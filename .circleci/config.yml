@@ -7,8 +7,8 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/openjdk:8-jdk
-      # - image: openjdk:8-jdk-alpine
+      #- image: circleci/openjdk:8-jdk
+      - image: gcr.io/google-appengine/openjdk:8
       
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
