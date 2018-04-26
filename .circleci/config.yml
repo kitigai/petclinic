@@ -91,6 +91,7 @@ jobs:
       - run:
           name: Check jdk version
           command: |
+            pwd
             ls -a
       - run:
           name: Store Service Account
@@ -111,7 +112,7 @@ jobs:
       - run:
           name: Deploy docker to GKP
           command: |
-            docker load < docker-cache/build-image.tar
+            docker load < /home/circleci/repo/docker-cache/build-image.tar
             ./deploy.sh
 
 
