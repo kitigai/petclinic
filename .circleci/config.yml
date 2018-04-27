@@ -67,7 +67,7 @@ jobs:
            docker save -o docker-cache/build-image.tar us.gcr.io/${PROJECT_NAME}/spring-petclinic
 
       - save_cache:
-          key: docker_cache_key-
+          key: docker_cache_key-{{ .Branch }}-{{ .Revision }}
           paths:
             - docker-cache
 
@@ -84,6 +84,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
+          - docker_cache_key-{{ .Branch }}-{{ .Revision }}
           - docker_cache_key-
 
 
