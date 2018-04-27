@@ -60,7 +60,7 @@ jobs:
          command: |
            #sudo docker ps
            #sudo /opt/apache-maven-3.5.3/bin/mvn -e -DskipTests install dockerfile:build
-           mvn -DskipTests=true package
+           mvn package
            cp target/spring-petclinic-1.5.1.jar ./spring-petclinic.jar
            docker build --file=Dockerfile -t us.gcr.io/${PROJECT_NAME}/spring-petclinic .
            mkdir -p docker-cache
