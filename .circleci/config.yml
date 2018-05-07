@@ -158,6 +158,5 @@ workflows:
             - unitTest
       - deploy-job:
           requires:
-            - unitTest
             - build
 
