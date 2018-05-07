@@ -4,7 +4,6 @@
 #
 version: 2
 jobs:
-
   unitTest:
     docker:
       # specify the version you desire here
@@ -153,7 +152,7 @@ workflows:
   build_and_deploy:
     jobs:
       - unitTest
-      - build
+      - build:
           requires:
             - unitTest
       - deploy-job:
